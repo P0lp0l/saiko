@@ -3,83 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سايكو PRO | SAIKO</title>
+    <title>SAIKO PRO</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-    
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
     <style>
-        :root { --primary: #ff006e; --secondary: #8338ec; --bg: #0a0a0a; }
+        :root { --primary: #ff006e; --bg: #0a0a0a; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg); color: white; min-height: 100vh; }
-        .container { max-width: 500px; margin: 0 auto; padding: 20px; }
-        
-        /* تصميم الكروت */
-        .card { background: rgba(255,255,255,0.05); padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); text-align: center; margin-bottom: 20px; }
-        input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #333; background: #111; color: white; text-align: center; }
-        .btn { width: 100%; padding: 12px; border-radius: 10px; border: none; background: linear-gradient(45deg, var(--primary), var(--secondary)); color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        
-        /* إحصائيات التفاعل */
-        .stats-bar { display: flex; justify-content: center; gap: 15px; margin: 15px 0; }
-        .stat-item { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; min-width: 80px; }
-        .stat-num { display: block; font-weight: 900; color: var(--primary); font-size: 1.2rem; }
-
-        /* الرسائل */
-        .msg-card { background: #151515; padding: 20px; border-radius: 15px; margin-bottom: 15px; border-right: 4px solid var(--primary); position: relative; text-align: right; }
-        .save-btn { background: rgba(255,255,255,0.1); color: #ccc; padding: 5px 12px; border-radius: 8px; font-size: 0.8rem; border: none; cursor: pointer; margin-top: 10px; }
+        body { background: var(--bg); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .card { background: rgba(255,255,255,0.05); padding: 30px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); width: 90%; max-width: 400px; text-align: center; }
+        input { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #333; background: #111; color: white; text-align: center; }
+        .btn { width: 100%; padding: 12px; border-radius: 10px; border: none; background: var(--primary); color: white; font-weight: bold; cursor: pointer; margin-bottom: 10px; }
+        .secondary-btn { background: none; border: 1px solid var(--primary); color: var(--primary); }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div id="authPage" class="card">
-        <h1 style="color: var(--primary); margin-bottom: 20px;">SAIKO 🚀</h1>
-        <input type="email" id="email" placeholder="البريد الإلكتروني">
-        <input type="password" id="password" placeholder="كلمة السر (6 أرقام فأكثر)">
-        <input type="text" id="username" placeholder="اليوزرنام (عند التسجيل فقط)">
-        <button class="btn" onclick="authAction('login')">تسجيل دخول</button>
-        <button class="btn" style="background:none; border:1px solid var(--primary); margin-top:10px;" onclick="authAction('register')">إنشاء حساب جديد</button>
-    </div>
-
-    <div id="mainPage" style="display: none;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2 id="helloUser">@username</h2>
-            <button onclick="logout()" style="color:red; background:none; border:none; cursor:pointer;">خروج 🚪</button>
-        </div>
-
-        <div class="card">
-            <div class="stats-bar">
-                <div class="stat-item"><span class="stat-num" id="likes">0</span>إعجاب</div>
-                <div class="stat-item"><span class="stat-num" id="followers">0</span>متابع</div>
-            </div>
-
-            <div id="visitorActions" style="display: none;">
-                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                    <button class="btn" onclick="interact('likes')" style="background:#ff4757;">❤️ إعجاب</button>
-                    <button class="btn" onclick="interact('followers')" style="background:#3a86ff;">👤 متابعة</button>
-                </div>
-                <textarea id="msgInput" placeholder="اكتب رسالة سرية لهذا الشخص..."></textarea>
-                <button class="btn" onclick="sendSecretMsg()">🚀 إرسال الرسالة</button>
-            </div>
-
-            <div id="ownerActions">
-                <p style="font-size: 0.8rem; color: #888; margin-bottom: 5px;">انشر رابطك لاستقبال الرسائل:</p>
-                <div id="linkDisplay" onclick="copyMyLink()" style="background:#111; padding:10px; border-radius:10px; color:var(--primary); cursor:pointer; font-size:0.85rem; word-break:break-all;"></div>
-            </div>
-        </div>
-
-        <div id="messagesSection">
-            <h3 style="margin-bottom: 15px;">📥 الرسائل الواردة:</h3>
-            <div id="messagesContainer"></div>
-        </div>
-    </div>
+<div class="card" id="authBox">
+    <h1 style="margin-bottom: 20px; color: var(--primary);">SAIKO 🚀</h1>
+    <input type="email" id="email" placeholder="البريد الإلكتروني">
+    <input type="password" id="password" placeholder="كلمة السر (6 أرقام+)">
+    <input type="text" id="username" placeholder="اليوزرنام (بالإنجليزي)">
+    
+    <button class="btn" onclick="processAuth('login')">دخول</button>
+    <button class="btn secondary-btn" onclick="processAuth('register')">إنشاء حساب جديد</button>
 </div>
 
 <script>
-    // إعدادات Firebase الخاصة بك
     const firebaseConfig = {
         apiKey: "AIzaSyDhz9GpeZE5N78OquK61dQ_pkqTGKbZegc",
         authDomain: "saiko-a6971.firebaseapp.com",
@@ -89,109 +40,50 @@
         appId: "1:946021136402:web:3f58bccc68de0663c940cb"
     };
     firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
 
-    // 1. نظام الدخول والحماية
-    async function authAction(type) {
-        const e = document.getElementById('email').value.trim();
-        const p = document.getElementById('password').value;
-        const u = document.getElementById('username').value.toLowerCase().trim();
+    async function processAuth(type) {
+        const email = document.getElementById('email').value.trim();
+        const pass = document.getElementById('password').value;
+        const user = document.getElementById('username').value.trim().toLowerCase();
+
+        // منع الخطأ قبل الإرسال لـ Firebase
+        if (!email || !pass) {
+            alert("يا بطل، اكتب الإيميل والباسورد أولاً!");
+            return;
+        }
+
+        if (type === 'register' && !user) {
+            alert("لازم تكتب يوزرنام عشان الناس تعرف تبعتلك!");
+            return;
+        }
 
         try {
             if (type === 'register') {
-                if(!u || !e || p.length < 6) return alert("تأكد من كتابة اليوزرنام والإيميل وباسورد لا يقل عن 6 رموز");
-                const userDoc = await db.collection('users').doc(u).get();
-                if(userDoc.exists) return alert("اليوزرنام محجوز لشخص آخر!");
-                
-                const res = await auth.createUserWithEmailAndPassword(e, p);
-                await db.collection('users').doc(u).set({ email: e, uid: res.user.uid, likes: 0, followers: 0 });
-                localStorage.setItem('saiko_username', u);
+                const userDoc = await firebase.firestore().collection('users').doc(user).get();
+                if (userDoc.exists) {
+                    alert("اليوزرنام ده محجوز، جرب واحد تاني");
+                    return;
+                }
+                const res = await firebase.auth().createUserWithEmailAndPassword(email, pass);
+                await firebase.firestore().collection('users').doc(user).set({
+                    email: email,
+                    uid: res.user.uid
+                });
+                localStorage.setItem('saiko_username', user);
             } else {
-                await auth.signInWithEmailAndPassword(e, p);
-                const snap = await db.collection('users').where('email', '==', e).get();
+                await firebase.auth().signInWithEmailAndPassword(email, pass);
+                const snap = await firebase.firestore().collection('users').where('email', '==', email).get();
                 snap.forEach(doc => localStorage.setItem('saiko_username', doc.id));
             }
-            location.reload();
-        } catch (err) { alert("خطأ: " + err.message); }
-    }
-
-    // 2. جلب الرسائل وعرضها مع ميزة "حفظ كصورة"
-    function loadContent(user) {
-        db.collection('messages').where('to', '==', user).onSnapshot(snap => {
-            const container = document.getElementById('messagesContainer');
-            container.innerHTML = '';
-            snap.forEach(doc => {
-                const card = document.createElement('div');
-                card.className = 'msg-card';
-                card.id = doc.id;
-                card.innerHTML = `<p>${doc.data().text}</p><button class="save-btn" onclick="saveAsImg('${doc.id}')">📸 حفظ كصورة للاستوري</button>`;
-                container.appendChild(card);
-            });
-        });
-        db.collection('users').doc(user).onSnapshot(doc => {
-            if(doc.exists) {
-                document.getElementById('likes').innerText = doc.data().likes || 0;
-                document.getElementById('followers').innerText = doc.data().followers || 0;
-            }
-        });
-    }
-
-    // 3. تحويل الرسالة لصورة
-    function saveAsImg(id) {
-        const node = document.getElementById(id);
-        const btn = node.querySelector('.save-btn');
-        btn.style.display = 'none';
-        html2canvas(node, { backgroundColor: '#151515', scale: 2 }).then(canvas => {
-            const a = document.createElement('a');
-            a.download = 'saiko_message.png'; a.href = canvas.toDataURL(); a.click();
-            btn.style.display = 'block';
-        });
-    }
-
-    // 4. إرسال وتفاعل
-    async function sendSecretMsg() {
-        const to = new URLSearchParams(window.location.search).get('to');
-        const txt = document.getElementById('msgInput').value;
-        if(!txt) return;
-        await db.collection('messages').add({ to: to, text: txt, time: firebase.firestore.FieldValue.serverTimestamp() });
-        alert("تم الإرسال بنجاح! 🔥");
-        document.getElementById('msgInput').value = '';
-    }
-
-    async function interact(type) {
-        const to = new URLSearchParams(window.location.search).get('to');
-        await db.collection('users').doc(to).update({ [type]: firebase.firestore.FieldValue.increment(1) });
-    }
-
-    function logout() { auth.signOut(); localStorage.clear(); location.reload(); }
-    function copyMyLink() {
-        navigator.clipboard.writeText(document.getElementById('linkDisplay').innerText);
-        alert("تم نسخ رابطك! انشره الآن 🔗");
-    }
-
-    // إدارة العرض (زائر أم صاحب حساب)
-    auth.onAuthStateChanged(user => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const toUser = urlParams.get('to');
-
-        if (toUser) {
-            document.getElementById('authPage').style.display = 'none';
-            document.getElementById('mainPage').style.display = 'block';
-            document.getElementById('visitorActions').style.display = 'block';
-            document.getElementById('ownerActions').style.display = 'none';
-            document.getElementById('messagesSection').style.display = 'none';
-            document.getElementById('helloUser').innerText = "إرسال إلى @" + toUser;
-            loadContent(toUser);
-        } else if (user) {
-            document.getElementById('authPage').style.display = 'none';
-            document.getElementById('mainPage').style.display = 'block';
-            const u = localStorage.getItem('saiko_username');
-            document.getElementById('helloUser').innerText = "مرحباً @" + u;
-            document.getElementById('linkDisplay').innerText = window.location.origin + window.location.pathname + "?to=" + u;
-            loadContent(u);
+            alert("تم بنجاح! جاري تحويلك...");
+            window.location.reload();
+        } catch (error) {
+            // ترجمة الأخطاء الشائعة للعربية
+            if (error.code === 'auth/invalid-email') alert("الإيميل اللي كتبته مش مظبوط!");
+            else if (error.code === 'auth/weak-password') alert("الباسورد لازم يكون 6 رموز أو أكتر!");
+            else alert("خطأ: " + error.message);
         }
-    });
+    }
 </script>
 </body>
 </html>
