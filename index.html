@@ -14,76 +14,84 @@
     <style>
         :root { --primary: #ff006e; --secondary: #8338ec; --bg: #0a0a0a; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
-        body { background: var(--bg); color: white; min-height: 100vh; }
-        .container { max-width: 500px; margin: 0 auto; padding: 20px; }
+        body { background: var(--bg); color: white; min-height: 100vh; overflow-x: hidden; }
         
-        /* واجهة الدخول */
-        .auth-card { background: rgba(255,255,255,0.05); padding: 30px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.1); text-align: center; margin-top: 50px; }
-        input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 12px; border: 1px solid #333; background: #151515; color: white; text-align: center; }
-        .btn { width: 100%; padding: 12px; border-radius: 12px; border: none; background: linear-gradient(45deg, var(--primary), var(--secondary)); color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn:active { transform: scale(0.98); }
+        /* الخلفية المتحركة */
+        #bg-canvas { position: fixed; top: 0; left: 0; z-index: -1; }
 
-        /* البروفايل */
-        .profile-header { text-align: center; padding: 20px 0; }
-        .stats-bar { display: flex; justify-content: center; gap: 15px; margin: 20px 0; }
-        .stat-item { background: rgba(255,255,255,0.05); padding: 10px 20px; border-radius: 15px; min-width: 90px; }
-        .stat-num { display: block; font-weight: 900; color: var(--primary); font-size: 1.3rem; }
-
-        /* الرسائل */
-        .message-card { background: #151515; padding: 20px; border-radius: 20px; margin-bottom: 20px; border-right: 5px solid var(--primary); text-align: right; }
-        .msg-text { font-size: 1.1rem; line-height: 1.6; margin-bottom: 15px; }
-        .share-btn { background: rgba(255,255,255,0.1); color: #ccc; padding: 6px 15px; border-radius: 8px; font-size: 0.8rem; border: none; cursor: pointer; }
+        .container { max-width: 500px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
+        .card { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(10px); padding: 25px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
         
-        #linkDisplay { background: #111; padding: 12px; border-radius: 10px; border: 1px dashed #444; font-size: 0.8rem; cursor: pointer; color: var(--primary); margin: 15px 0; word-break: break-all; }
+        input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 12px; border: 1px solid #333; background: rgba(20,20,20,0.8); color: white; text-align: center; }
+        .btn { width: 100%; padding: 12px; border-radius: 12px; border: none; background: linear-gradient(45deg, var(--primary), var(--secondary)); color: white; font-weight: bold; cursor: pointer; }
+        
+        .message-card { background: rgba(20,20,20,0.9); padding: 20px; border-radius: 20px; margin-bottom: 15px; border-right: 5px solid var(--primary); text-align: right; }
+        .msg-tools { display: flex; gap: 10px; margin-top: 10px; }
+        .tool-btn { background: rgba(255,255,255,0.1); border: none; color: white; padding: 5px 10px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; }
+        .tool-btn.active { background: var(--primary); }
+
+        .public-badge { background: #00f2ff; color: #000; font-size: 0.7rem; padding: 2px 8px; border-radius: 5px; margin-bottom: 5px; display: inline-block; font-weight: bold; }
     </style>
 </head>
 <body>
 
+<canvas id="bg-canvas"></canvas>
+
 <div class="container">
-    <div id="authPage" class="auth-card">
-        <h1 style="margin-bottom: 20px; color: var(--primary);">SAIKO 🚀</h1>
+    <div id="authPage" class="card">
+        <h1 style="color: var(--primary); margin-bottom: 20px;">SAIKO 🚀</h1>
         <input type="email" id="email" placeholder="البريد الإلكتروني">
-        <input type="password" id="password" placeholder="كلمة السر (6 أرقام+)">
-        <input type="text" id="username" placeholder="اليوزرنام (بالإنجليزي فقط)">
+        <input type="password" id="password" placeholder="كلمة السر">
+        <input type="text" id="username" placeholder="اليوزرنام (جديد)">
         <button class="btn" onclick="authAction('login')">دخول</button>
-        <button class="btn" style="background: #222; margin-top: 10px;" onclick="authAction('register')">إنشاء حساب جديد</button>
+        <button class="btn" style="background:none; border:1px solid #444; margin-top:10px;" onclick="authAction('register')">إنشاء حساب</button>
     </div>
 
     <div id="mainPage" style="display: none;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div class="card">
             <h2 id="helloUser">@username</h2>
-            <button onclick="logout()" style="color:red; background:none; border:none; cursor:pointer; font-weight:bold;">خروج 🚪</button>
-        </div>
-
-        <div class="profile-header">
-            <div class="stats-bar">
-                <div class="stat-item"><span class="stat-num" id="likes">0</span>إعجاب</div>
-                <div class="stat-item"><span class="stat-num" id="followers">0</span>متابع</div>
+            <div id="ownerSection">
+                <div id="linkDisplay" onclick="copyMyLink()" style="font-size: 0.8rem; color: var(--primary); cursor: pointer; margin: 10px 0;">انسخ رابطك وانشره 🔗</div>
+                <button onclick="logout()" style="color:red; background:none; border:none; cursor:pointer;">خروج</button>
             </div>
 
-            <div id="visitorActions" style="display: none;">
-                <div style="display: flex; gap: 10px;">
-                    <button class="btn" onclick="interact('likes')" style="background:#ff4757;">❤️ إعجاب</button>
-                    <button class="btn" onclick="interact('followers')" style="background:#3a86ff;">👤 متابعة</button>
+            <div id="visitorSection" style="display: none;">
+                <textarea id="msgInput" placeholder="اكتب رسالة مجهولة..."></textarea>
+                <button class="btn" onclick="sendMsg()">🚀 إرسال الآن</button>
+                <div id="publicMessages" style="margin-top: 20px; text-align: right;">
+                    <h4>📌 رسائل معروضة:</h4>
+                    <div id="publicContainer"></div>
                 </div>
-                <textarea id="msgInput" placeholder="اكتب رسالة سرية..." style="margin-top: 20px; height: 100px;"></textarea>
-                <button class="btn" onclick="sendSecretMsg()">🚀 إرسال الرسالة</button>
-            </div>
-
-            <div id="ownerActions">
-                <div id="linkDisplay" onclick="copyMyLink()">اضغط هنا لنسخ رابطك ونشره 🔗</div>
             </div>
         </div>
 
         <div id="myMessagesSection">
-            <h3 style="margin-bottom: 15px; border-bottom: 1px solid #222; padding-bottom: 10px;">📥 الرسائل الواردة:</h3>
+            <h3>📥 رسائلي الخاصة:</h3>
             <div id="messagesContainer"></div>
         </div>
     </div>
 </div>
 
 <script>
-    // إعدادات Firebase
+    // --- كود الخلفية المتحركة (Canvas) ---
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let w, h, particles = [];
+    function initBg() {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+    }
+    class Particle {
+        constructor() { this.x = Math.random() * w; this.y = Math.random() * h; this.size = Math.random() * 3; this.spX = Math.random() * 1 - 0.5; this.spY = Math.random() * 1 - 0.5; }
+        update() { this.x += this.spX; this.y += this.spY; if (this.x > w || this.x < 0) this.spX *= -1; if (this.y > h || this.y < 0) this.spY *= -1; }
+        draw() { ctx.fillStyle = 'rgba(255, 0, 110, 0.5)'; ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); }
+    }
+    for(let i=0; i<50; i++) particles.push(new Particle());
+    function anim() { ctx.clearRect(0,0,w,h); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(anim); }
+    window.addEventListener('resize', initBg);
+    initBg(); anim();
+
+    // --- كود Firebase والوظائف ---
     const firebaseConfig = {
         apiKey: "AIzaSyDhz9GpeZE5N78OquK61dQ_pkqTGKbZegc",
         authDomain: "saiko-a6971.firebaseapp.com",
@@ -96,19 +104,12 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
-    // نظام الدخول
     async function authAction(type) {
-        const e = document.getElementById('email').value.trim();
-        const p = document.getElementById('password').value;
-        const u = document.getElementById('username').value.toLowerCase().trim();
-
-        if(!e || p.length < 6) return alert("تأكد من كتابة الإيميل وباسورد 6 أرقام على الأقل");
-
+        const e = document.getElementById('email').value, p = document.getElementById('password').value, u = document.getElementById('username').value.toLowerCase().trim();
         try {
             if (type === 'register') {
-                if(!u) return alert("اكتب يوزرنام للإرسال!");
                 const res = await auth.createUserWithEmailAndPassword(e, p);
-                await db.collection('users').doc(u).set({ email: e, uid: res.user.uid, likes: 0, followers: 0 });
+                await db.collection('users').doc(u).set({ email: e, uid: res.user.uid });
                 localStorage.setItem('saiko_username', u);
             } else {
                 await auth.signInWithEmailAndPassword(e, p);
@@ -116,91 +117,80 @@
                 snap.forEach(doc => localStorage.setItem('saiko_username', doc.id));
             }
             location.reload();
-        } catch (err) { alert("خطأ: " + err.message); }
+        } catch (err) { alert(err.message); }
     }
 
-    // جلب البيانات والرسائل
-    function loadMyContent(user) {
-        // تحديث العدادات
-        db.collection('users').doc(user).onSnapshot(doc => {
-            if(doc.exists){
-                document.getElementById('likes').innerText = doc.data().likes || 0;
-                document.getElementById('followers').innerText = doc.data().followers || 0;
-            }
-        });
+    function loadContent(user, isOwner) {
+        // تحميل الرسائل (الخاصة لو صاحب الحساب، أو العامة لو زائر)
+        let query = db.collection('messages').where('to', '==', user);
+        if (!isOwner) query = query.where('isPublic', '==', true);
 
-        // تحديث الرسائل
-        db.collection('messages').where('to', '==', user).onSnapshot(snap => {
-            const container = document.getElementById('messagesContainer');
-            container.innerHTML = snap.empty ? '<p style="color:#444; text-align:center; margin-top:20px;">لا توجد رسائل بعد..</p>' : '';
+        query.onSnapshot(snap => {
+            const container = isOwner ? document.getElementById('messagesContainer') : document.getElementById('publicContainer');
+            container.innerHTML = '';
             snap.forEach(doc => {
+                const data = doc.data();
                 const card = document.createElement('div');
                 card.className = 'message-card';
-                card.id = doc.id;
                 card.innerHTML = `
-                    <p class="msg-text">${doc.data().text}</p>
-                    <button class="share-btn" onclick="saveAsImage('${doc.id}')">📸 حفظ كصورة للاستوري</button>
+                    ${data.isPublic ? '<span class="public-badge">معروض للجميع</span>' : ''}
+                    <p>${data.text}</p>
+                    <div class="msg-tools">
+                        <button class="tool-btn" onclick="saveAsImg('${doc.id}')">📸 صورة</button>
+                        ${isOwner ? `
+                            <button class="tool-btn ${data.isFav ? 'active' : ''}" onclick="toggleTag('${doc.id}', 'isFav')">⭐</button>
+                            <button class="tool-btn ${data.isPublic ? 'active' : ''}" onclick="toggleTag('${doc.id}', 'isPublic')">👁️ عرض للكل</button>
+                        ` : ''}
+                    </div>
                 `;
+                card.id = doc.id;
                 container.appendChild(card);
             });
         });
     }
 
-    // ميزة حفظ الرسالة كصورة
-    function saveAsImage(id) {
-        const node = document.getElementById(id);
-        const btn = node.querySelector('.share-btn');
-        btn.style.display = 'none';
-        html2canvas(node, { backgroundColor: '#151515', scale: 2 }).then(canvas => {
-            const a = document.createElement('a');
-            a.download = 'saiko-msg.png';
-            a.href = canvas.toDataURL();
-            a.click();
-            btn.style.display = 'block';
-        });
+    async function toggleTag(id, field) {
+        const snap = await db.collection('messages').doc(id).get();
+        await db.collection('messages').doc(id).update({ [field]: !snap.data()[field] });
     }
 
-    // إرسال وتفاعل
-    async function sendSecretMsg() {
+    async function sendMsg() {
         const to = new URLSearchParams(window.location.search).get('to');
         const txt = document.getElementById('msgInput').value;
         if(!txt) return;
-        await db.collection('messages').add({ to: to, text: txt, time: firebase.firestore.FieldValue.serverTimestamp() });
-        alert("تم الإرسال بنجاح! 🔥");
-        document.getElementById('msgInput').value = '';
+        await db.collection('messages').add({ to: to, text: txt, isPublic: false, isFav: false, time: firebase.firestore.FieldValue.serverTimestamp() });
+        alert("تم الإرسال!"); document.getElementById('msgInput').value = '';
     }
 
-    async function interact(type) {
-        const to = new URLSearchParams(window.location.search).get('to');
-        await db.collection('users').doc(to).update({ [type]: firebase.firestore.FieldValue.increment(1) });
+    function saveAsImg(id) {
+        const node = document.getElementById(id);
+        const tools = node.querySelector('.msg-tools');
+        tools.style.display = 'none';
+        html2canvas(node, { backgroundColor: '#1a1a1a' }).then(canvas => {
+            const a = document.createElement('a'); a.download = 'saiko.png'; a.href = canvas.toDataURL(); a.click();
+            tools.style.display = 'flex';
+        });
     }
 
     function logout() { auth.signOut(); localStorage.clear(); location.reload(); }
-    
-    function copyMyLink() {
-        const link = window.location.origin + window.location.pathname + "?to=" + localStorage.getItem('saiko_username');
-        navigator.clipboard.writeText(link);
-        alert("تم نسخ رابطك! انشره دلوقتي 🔥");
-    }
+    function copyMyLink() { navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?to=" + localStorage.getItem('saiko_username')); alert("تم النسخ!"); }
 
-    // كود تشغيل الواجهة
     auth.onAuthStateChanged(user => {
         const to = new URLSearchParams(window.location.search).get('to');
         if (to) {
             document.getElementById('authPage').style.display = 'none';
             document.getElementById('mainPage').style.display = 'block';
-            document.getElementById('visitorActions').style.display = 'block';
-            document.getElementById('ownerActions').style.display = 'none';
+            document.getElementById('visitorSection').style.display = 'block';
+            document.getElementById('ownerSection').style.display = 'none';
             document.getElementById('myMessagesSection').style.display = 'none';
-            document.getElementById('helloUser').innerText = "إرسال إلى @" + to;
-            loadMyContent(to);
+            document.getElementById('helloUser').innerText = "@" + to;
+            loadContent(to, false);
         } else if (user) {
-            const myU = localStorage.getItem('saiko_username');
             document.getElementById('authPage').style.display = 'none';
             document.getElementById('mainPage').style.display = 'block';
+            const myU = localStorage.getItem('saiko_username');
             document.getElementById('helloUser').innerText = "مرحباً @" + myU;
-            document.getElementById('linkDisplay').innerText = window.location.origin + window.location.pathname + "?to=" + myU;
-            loadMyContent(myU);
+            loadContent(myU, true);
         }
     });
 </script>
