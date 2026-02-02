@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سايكو | Saiko - رسائل مجهولة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background: #0a0a0a;
+            position: relative;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(255, 0, 128, 0.3); }
+            to { box-shadow: 0 0 40px rgba(0, 255, 255, 0.3); }
+        }
+
+        .logo {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff006e, #8338ec, #3a86ff, #06ffa5);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient 5s ease infinite;
+            letter-spacing: 5px;
+            cursor: pointer;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .tagline {
+            color: #ccc;
+            margin-top: 10px;
+            font-size: 1rem;
+        }
+
+        .auth-box, .profile-box, .send-box, .messages-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .auth-box h2 {
+            color: #ff006e;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group input, textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+            text-align: right;
+        }
+
+        .input-group input:focus, textarea:focus {
+            outline: none;
+            border-color: #ff006e;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #ff006e, #8338ec);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Tajawal', sans-serif;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 0, 110, 0.4);
+        }
+
+        .nav-btns {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: linear-gradient(45deg, #ff006e, #8338ec);
+            border-color: transparent;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, #ff006e, #8338ec);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .profile-name {
+            color: #fff;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .profile-link {
+            background: rgba(0, 255, 100, 0.1);
+            border: 1px solid #00ff64;
+            padding: 10px;
+            border-radius: 10px;
+            color: #00ff64;
+            font-family: monospace;
+            word-break: break-all;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .profile-link:hover {
+            background: rgba(0, 255, 100, 0.2);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .stat-number {
+            color: #ff006e;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .to-user {
+            color: #ff006e;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .message-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border-right: 3px solid #ff006e;
+            position: relative;
+            text-align: right;
+        }
+
+        .message-text {
+            color: #ddd;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .message-time {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 0, 0, 0.3);
+            border: none;
+            color: #ff4444;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #666;
+            padding: 40px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            margin-top: 30px;
+        }
+
+        .alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: rgba(255, 0, 110, 0.9);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s;
+            z-index: 1000;
+        }
+
+        .alert.show {
+            transform: translateX(0);
+        }
+
+        .alert.success {
+            background: rgba(0, 200, 100, 0.9);
+        }
+
+        .creator-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #ff006e, #8338ec);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            margin-top: 15px;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .whatsapp-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #25d366;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+
+        .whatsapp-btn:hover {
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas-container"></canvas>
+
+    <div class="container">
+        <div class="header">
+            <h1 class="logo" onclick="goHome()">سايكو</h1>
+            <p class="tagline">S A I K O - رسائل مجهولة لكل شخص</p>
+        </div>
+
+        <div class="nav-btns" id="navBtns" style="display: none;">
+            <button class="nav-btn active" onclick="showProfile()">👤 ملفي</button>
+            <button class="nav-btn" onclick="showMessages()">💌 رسائلي</button>
+            <button class="nav-btn" onclick="logout()">🚪 خروج</button>
+        </div>
+
+        <div class="auth-box" id="authBox">
+            <h2>🚀 انضم إلى سايكو</h2>
+            <div class="input-group">
+                <input type="text" id="usernameInput" placeholder="اكتب يوزرنامك (بالإنجليزي)" maxlength="20">
+            </div>
+            <button class="btn" onclick="register()">إنشاء حساب / دخول</button>
+            <p style="color: #888; margin-top: 15px; font-size: 0.9rem;">
+                أو ادخل على رابط أي شخص لإرسال رسالة له
+            </p>
+        </div>
+
+        <div class="profile-box" id="profileBox" style="display: none;">
+            <div class="profile-avatar">👤</div>
+            <div class="profile-name" id="profileName">@username</div>
+            <p style="color: #888; margin-bottom: 15px;">رابطك الخاص 👇</p>
+            <div class="profile-link" id="profileLink" onclick="copyLink()">
+                https://saiko.com/u/username
+            </div>
+            <p style="color: #00ff64; font-size: 0.9rem; margin-top: 10px;" id="copyText">اضغط للنسخ</p>
+            
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number" id="msgCount">0</div>
+                    <div class="stat-label">الرسائل</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="viewsCount">0</div>
+                    <div class="stat-label">المشاهدات</div>
+                </div>
+            </div>
+            
+            <div class="creator-badge">👨‍💻 Made by SAIKO</div>
+        </div>
+
+        <div class="send-box" id="sendBox" style="display: none;">
+            <h3>إرسال رسالة مجهولة إلى</h3>
+            <div class="to-user" id="toUser">@username</div>
+            <textarea id="messageText" placeholder="اكتب رسالتك هنا... قول اللي في قلبك بدون ما يعرف مين أنت! 🤐"></textarea>
+            <button class="btn" onclick="sendMessage()">🚀 إرسال الرسالة</button>
+            <button class="btn" onclick="goHome()" style="background: rgba(255,255,255,0.1); margin-top: 10px;">🔙 رجوع</button>
+        </div>
+
+        <div class="messages-box" id="messagesBox" style="display: none;">
+            <h3>💌 رسائلك المجهولة</h3>
+            <div id="messagesList">
+                <div class="empty-state">لا توجد رسائل بعد... شارك رابطك مع أصدقائك!</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>صنع بحب ❤️ بواسطة SAIKO</p>
+            <p style="font-size: 0.8rem; margin-top: 5px;">جميع الحقوق محفوظة © 2024</p>
+        </div>
+    </div>
+
+    <div id="alert" class="alert">تم بنجاح!</div>
+
+    <script>
+        // Firebase Configuration - Your API Keys
+        const firebaseConfig = {
+            apiKey: "AIzaSyDhz9GpeZE5N78OquK61dQ_pkqTGKbZegc",
+            authDomain: "saiko-a6971.firebaseapp.com",
+            projectId: "saiko-a6971",
+            storageBucket: "saiko-a6971.firebasestorage.app",
+            messagingSenderId: "946021136402",
+            appId: "1:946021136402:web:3f58bccc68de0663c940cb",
+            measurementId: "G-645MF6MXFT"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        let currentUser = null;
+        let targetUser = null;
+
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            if (urlParams.has('to')) {
+                targetUser = urlParams.get('to');
+                showSendPage(targetUser);
+            } else if (localStorage.getItem('saiko_user')) {
+                currentUser = localStorage.getItem('saiko_user');
+                showProfile();
+            } else {
+                showAuth();
+            }
+        };
+
+        function showAuth() {
+            hideAll();
+            document.getElementById('authBox').style.display = 'block';
+        }
+
+        function showProfile() {
+            hideAll();
+            document.getElementById('navBtns').style.display = 'flex';
+            document.getElementById('profileBox').style.display = 'block';
+            document.getElementById('messagesBox').style.display = 'block';
+            
+            if (currentUser) {
+                loadUserData(currentUser);
+            }
+        }
+
+        function showMessages() {
+            hideAll();
+            document.getElementById('navBtns').style.display = 'flex';
+            document.getElementById('messagesBox').style.display = 'block';
+        }
+
+        function showSendPage(username) {
+            hideAll();
+            document.getElementById('sendBox').style.display = 'block';
+            document.getElementById('toUser').textContent = '@' + username;
+            incrementViews(username);
+        }
+
+        function hideAll() {
+            document.getElementById('authBox').style.display = 'none';
+            document.getElementById('profileBox').style.display = 'none';
+            document.getElementById('sendBox').style.display = 'none';
+            document.getElementById('messagesBox').style.display = 'none';
+            document.getElementById('navBtns').style.display = 'none';
+        }
+
+        function goHome() {
+            window.location.href = window.location.origin + window.location.pathname;
+        }
+
+        async function register() {
+            const username = document.getElementById('usernameInput').value.trim().toLowerCase();
+            
+            if (!username) {
+                showAlert('اكتب يوزرنامك الأول!', 'error');
+                return;
+            }
+            
+            if (!/^[a-z0-9_]+$/.test(username)) {
+                showAlert('اليوزرنامك يجب أن يكون بالإنجليزي وحروف وأرقام فقط!', 'error');
+                return;
+            }
+
+            try {
+                const doc = await db.collection('users').doc(username).get();
+                
+                if (doc.exists) {
+                    currentUser = username;
+                    localStorage.setItem('saiko_user', username);
+                    showAlert('تم تسجيل الدخول!', 'success');
+                    showProfile();
+                } else {
+                    await db.collection('users').doc(username).set({
+                        username: username,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        messagesCount: 0,
+                        viewsCount: 0
+                    });
+                    
+                    currentUser = username;
+                    localStorage.setItem('saiko_user', username);
+                    showAlert('تم إنشاء الحساب!', 'success');
+                    showProfile();
+                }
+            } catch (error) {
+                showAlert('حدث خطأ: ' + error.message, 'error');
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('saiko_user');
+            showAuth();
+            showAlert('تم تسجيل الخروج', 'success');
+        }
+
+        async function loadUserData(username) {
+            try {
+                const doc = await db.collection('users').doc(username).get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    document.getElementById('profileName').textContent = '@' + username;
+                    
+                    const link = window.location.origin + window.location.pathname + '?to=' + username;
+                    document.getElementById('profileLink').textContent = link;
+                    
+                    document.getElementById('msgCount').textContent = data.messagesCount || 0;
+                    document.getElementById('viewsCount').textContent = data.viewsCount || 0;
+                    
+                    loadMessages(username);
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function loadMessages(username) {
+            try {
+                const snapshot = await db.collection('messages')
+                    .where('to', '==', username)
+                    .orderBy('timestamp', 'desc')
+                    .get();
+                
+                const list = document.getElementById('messagesList');
+                
+                if (snapshot.empty) {
+                    list.innerHTML = '<div class="empty-state">لا توجد رسائل بعد... شارك رابطك مع أصدقائك!</div>';
+                    return;
+                }
+                
+                list.innerHTML = '';
+                snapshot.forEach(doc => {
+                    const msg = doc.data();
+                    const div = document.createElement('div');
+                    div.className = 'message-item';
+                    div.innerHTML = `
+                        <button class="delete-btn" onclick="deleteMessage('${doc.id}')">🗑️</button>
+                        <div class="message-text">${escapeHtml(msg.text)}</div>
+                        <div class="message-time">${formatDate(msg.timestamp)}</div>
+                    `;
+                    list.appendChild(div);
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function sendMessage() {
+            const text = document.getElementById('messageText').value.trim();
+            
+            if (!text) {
+                showAlert('اكتب رسالة الأول!', 'error');
+                return;
+            }
+            
+            if (!targetUser) {
+                showAlert('خطأ في تحديد المستلم!', 'error');
+                return;
+            }
+
+            try {
+                await db.collection('messages').add({
+                    to: targetUser,
+                    text: text,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    read: false
+                });
+                
+                await db.collection('users').doc(targetUser).update({
+                    messagesCount: firebase.firestore.FieldValue.increment(1)
+                });
+                
+                document.getElementById('messageText').value = '';
+                showAlert('تم إرسال الرسالة بنجاح! ✅', 'success');
+                
+                setTimeout(() => {
+                    goHome();
+                }, 2000);
+                
+            } catch (error) {
+                showAlert('حدث خطأ: ' + error.message, 'error');
+            }
+        }
+
+        async function deleteMessage(msgId) {
+            if (!confirm('هل تريد حذف هذه الرسالة؟')) return;
+            
+            try {
+                await db.collection('messages').doc(msgId).delete();
+                await db.collection('users').doc(currentUser).update({
+                    messagesCount: firebase.firestore.FieldValue.increment(-1)
+                });
+                
+                loadMessages(currentUser);
+                showAlert('تم الحذف!', 'success');
+            } catch (error) {
+                showAlert('حدث خطأ!', 'error');
+            }
+        }
+
+        async function incrementViews(username) {
+            try {
+                await db.collection('users').doc(username).update({
+                    viewsCount: firebase.firestore.FieldValue.increment(1)
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        function copyLink() {
+            const link = document.getElementById('profileLink').textContent;
+            navigator.clipboard.writeText(link).then(() => {
+                document.getElementById('copyText').textContent = 'تم النسخ! ✅';
+                setTimeout(() => {
+                    document.getElementById('copyText').textContent = 'اضغط للنسخ';
+                }, 2000);
+            });
+        }
+
+        function showAlert(msg, type) {
+            const alert = document.getElementById('alert');
+            alert.textContent = msg;
+            alert.className = 'alert show ' + (type === 'success' ? 'success' : '');
+            setTimeout(() => alert.classList.remove('show'), 3000);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatDate(timestamp) {
+            if (!timestamp) return 'الآن';
+            const date = timestamp.toDate();
+            return date.toLocaleString('ar-EG');
+        }
+
+        // Animated Background
+        const canvas = document.getElementById('canvas-container');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+        let currentMode = 0;
+        let modeTimer = 0;
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Heart {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = height + 20;
+                this.size = Math.random() * 20 + 10;
+                this.speedY = Math.random() * 2 + 1;
+                this.opacity = Math.random() * 0.5 + 0.5;
+                this.color = `hsl(${Math.random() * 60 + 300}, 100%, 70%)`;
+            }
+            update() {
+                this.y -= this.speedY;
+                this.opacity -= 0.002;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                ctx.translate(this.x, this.y);
+                ctx.beginPath();
+                const topCurveHeight = this.size * 0.3;
+                ctx.moveTo(0, topCurveHeight);
+                ctx.bezierCurveTo(0, 0, -this.size / 2, 0, -this.size / 2, topCurveHeight);
+                ctx.bezierCurveTo(-this.size / 2, (this.size + topCurveHeight) / 2, 0, this.size, 0, this.size);
+                ctx.bezierCurveTo(0, this.size, this.size / 2, (this.size + topCurveHeight) / 2, this.size / 2, topCurveHeight);
+                ctx.bezierCurveTo(this.size / 2, 0, 0, 0, 0, topCurveHeight);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        class ActionParticle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 10;
+                this.vy = (Math.random() - 0.5) * 10;
+                this.size = Math.random() * 5 + 2;
+                this.life = 1;
+                this.color = `hsl(${Math.random() * 60}, 100%, 50%)`;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vx *= 0.98;
+                this.vy *= 0.98;
+                this.life -= 0.01;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.life;
+                ctx.fillStyle = this.color;
+                ctx.shadowBlur = 20;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        class Lightning {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = 0;
+                this.segments = [];
+                this.life = 1;
+                this.generate();
+            }
+            generate() {
+                let x = this.x, y = this.y;
+                while (y < height) {
+                    x += (Math.random() - 0.5) * 50;
+                    y += Math.random() * 30 + 10;
+                    this.segments.push({x, y});
+                }
+            }
+            update() {
+                this.life -= 0.05;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.life;
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 3;
+                ctx.shadowBlur = 30;
+                ctx.shadowColor = '#0ff';
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                this.segments.forEach(seg => ctx.lineTo(seg.x, seg.y));
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
+
+        class GeometricShape {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 50 + 20;
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotationSpeed = (Math.random() - 0.5) * 0.02;
+                this.vx = (Math.random() - 0.5) * 2;
+                this.vy = (Math.random() - 0.5) * 2;
+                this.sides = Math.floor(Math.random() * 4) + 3;
+                this.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.rotation += this.rotationSpeed;
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 2;
+                ctx.shadowBlur = 20;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                for (let i = 0; i < this.sides; i++) {
+                    const angle = (i / this.sides) * Math.PI * 2;
+                    ctx.lineTo(Math.cos(angle) * this.size, Math.sin(angle) * this.size);
+                }
+                ctx.closePath();
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
+
+        function updateMode() {
+            modeTimer++;
+            if (modeTimer > 600) {
+                modeTimer = 0;
+                currentMode = (currentMode + 1) % 4;
+                particles = [];
+            }
+            if (currentMode === 0 && Math.random() < 0.1) particles.push(new Heart());
+            else if (currentMode === 1 && Math.random() < 0.3) particles.push(new ActionParticle());
+            else if (currentMode === 2 && Math.random() < 0.05) particles.push(new Lightning());
+            else if (currentMode === 3 && particles.length < 20) particles.push(new GeometricShape());
+        }
+
+        function animate() {
+            const gradients = [
+                'rgba(20, 0, 40, 0.1)', 'rgba(40, 0, 0, 0.1)',
+                'rgba(0, 10, 40, 0.2)', 'rgba(10, 10, 30, 0.1)'
+            ];
+            ctx.fillStyle = gradients[currentMode];
+            ctx.fillRect(0, 0, width, height);
+            updateMode();
+            particles = particles.filter(p => {
+                p.update();
+                p.draw();
+                if (currentMode === 0) return p.y > -50 && p.opacity > 0;
+                if (currentMode === 1 || currentMode === 2) return p.life > 0;
+                return true;
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>
