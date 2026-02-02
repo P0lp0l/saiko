@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAIKO PRO | النسخة الأسطورية 🚀</title>
+    <title>SAIKO PRO | النسخة الشاملة 🚀</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
-    
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
@@ -15,46 +14,50 @@
         :root { --primary: #ff006e; --secondary: #8338ec; --whatsapp: #25d366; --danger: #d00000; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
         body { margin: 0; min-height: 100vh; color: white; transition: background 2s ease; overflow-x: hidden; background: #000; }
-        
         canvas { position: fixed; top: 0; left: 0; z-index: 2; pointer-events: none; }
         #lightning { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; opacity: 0; z-index: 1; pointer-events: none; }
         .container { max-width: 500px; margin: 0 auto; padding: 20px; position: relative; z-index: 10; }
 
-        /* تنسيق الإشعارات (Toasts) */
-        #toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 9999; }
-        .toast { background: rgba(255, 255, 255, 0.95); color: #000; padding: 12px 25px; border-radius: 50px; font-weight: bold; margin-top: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); animation: fadeInUp 0.5s ease, fadeOut 0.5s ease 2.5s; font-size: 0.9rem; border-bottom: 3px solid var(--primary); display: flex; align-items: center; gap: 10px; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-20px); } }
-
         /* الخلفيات الـ 11 */
-        .bg-0 { background: linear-gradient(to bottom, #200122, #6f0000, #fb8c00); }
-        .bg-1 { background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e); }
-        .bg-2 { background: linear-gradient(to bottom, #4e085e, #ff006e, #200122); }
-        .bg-3 { background: linear-gradient(to bottom, #000, #130f40, #000); }
+        .bg-0 { background: linear-gradient(to bottom, #200122, #6f0000); }
+        .bg-1 { background: linear-gradient(to bottom, #0f0c29, #302b63); }
+        .bg-2 { background: linear-gradient(to bottom, #4e085e, #ff006e); }
+        .bg-3 { background: #000; }
         .bg-4 { background: linear-gradient(to bottom, #000428, #004e92); }
         .bg-5 { background: linear-gradient(to bottom, #1d2671, #c33764); }
         .bg-6 { background: linear-gradient(to bottom, #0f2027, #2c5364); }
         .bg-7 { background: linear-gradient(to right, #11998e, #38ef7d); }
         .bg-8 { background: linear-gradient(to bottom, #8e2de2, #4a00e0); }
         .bg-9 { background: linear-gradient(to bottom, #f12711, #f5af19); }
-        .bg-10 { background: linear-gradient(to bottom, #1e1e2f, #11111d); }
+        .bg-10 { background: #11111d; }
+
+        /* التنبيهات */
+        #toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 9999; }
+        .toast { background: white; color: #000; padding: 12px 25px; border-radius: 50px; font-weight: bold; margin-top: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); animation: fadeInUp 0.5s ease; font-size: 0.8rem; border-bottom: 3px solid var(--primary); }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* البروفايل */
+        .profile-img { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--primary); margin: 0 auto 10px; background: #222; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; overflow: hidden; }
 
         .card { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(20px); padding: 25px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; text-align: center; }
-        input, textarea { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 15px; border: 1px solid #444; background: rgba(0,0,0,0.6); color: white; text-align: center; font-size: 1rem; outline: none; transition: 0.3s; }
-        input:focus, textarea:focus { border-color: var(--primary); }
-        textarea { height: 130px; text-align: right; resize: none; }
-        .char-counter { font-size: 0.7rem; color: #888; text-align: left; margin-top: -5px; margin-bottom: 10px; }
+        
+        .pass-wrapper { position: relative; width: 100%; }
+        .toggle-pass { position: absolute; left: 15px; top: 40%; transform: translateY(-50%); cursor: pointer; z-index: 5; font-size: 1.2rem; }
 
-        .btn { width: 100%; padding: 12px; border-radius: 12px; border: none; background: linear-gradient(45deg, var(--primary), var(--secondary)); color: white; font-weight: bold; cursor: pointer; margin-bottom: 5px; transition: 0.2s; }
-        .btn:active { transform: scale(0.98); }
+        input, textarea { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 15px; border: 1px solid #444; background: rgba(0,0,0,0.6); color: white; text-align: center; outline: none; }
+        textarea { height: 120px; text-align: right; resize: none; }
+
+        .btn { width: 100%; padding: 12px; border-radius: 12px; border: none; background: linear-gradient(45deg, var(--primary), var(--secondary)); color: white; font-weight: bold; cursor: pointer; margin-bottom: 5px; }
         .btn-wa { background: var(--whatsapp); text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem; }
-        .btn-danger { background: var(--danger) !important; font-size: 0.8rem; }
 
-        .message-card { background: #111; padding: 18px; border-radius: 20px 2px 20px 20px; margin: 0 auto 15px auto; border-right: 4px solid var(--primary); text-align: right; max-width: 95%; }
-        .message-content { font-size: 0.95rem; line-height: 1.6; max-height: 300px; overflow-y: auto; word-wrap: break-word; margin-bottom: 10px; }
-        .message-time { font-size: 0.65rem; color: #555; text-align: left; }
-        .msg-tools { display: flex; gap: 8px; margin-top: 10px; border-top: 1px solid #222; padding-top: 10px; }
-        .tool-btn { background: rgba(255,255,255,0.05); border: 1px solid #333; color: white; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.7rem; }
+        /* الرسائل */
+        .message-card { background: #111; padding: 15px; border-radius: 20px 2px 20px 20px; margin-bottom: 15px; border-right: 4px solid var(--primary); }
+        .msg-stats { display: flex; justify-content: space-around; padding-bottom: 10px; border-bottom: 1px solid #222; margin-bottom: 10px; font-size: 0.75rem; color: #666; }
+        .active-like { color: var(--primary) !important; font-weight: bold; }
+        .active-fav { color: #ffca28 !important; font-weight: bold; }
+
+        .msg-tools { display: flex; gap: 8px; justify-content: center; margin-top: 10px; }
+        .tool-btn { background: rgba(255,255,255,0.05); border: 1px solid #333; color: white; padding: 5px 12px; border-radius: 8px; cursor: pointer; font-size: 0.7rem; }
     </style>
 </head>
 <body class="bg-0">
@@ -65,54 +68,54 @@
 
 <div class="container">
     <div id="authPage" class="card">
-        <h1 style="color: var(--primary); font-size: 2.5rem;">SAIKO PRO</h1>
-        <p id="weatherStatus" style="font-size: 0.8rem; margin-bottom: 25px; color: #aaa;">تحميل الأجواء...</p>
+        <h1 style="color: var(--primary); font-size: 2.2rem;">SAIKO PRO</h1>
+        <p id="weatherStatus" style="font-size: 0.7rem; color: #888; margin-bottom: 20px;">تحميل الطقس...</p>
         <input type="email" id="email" placeholder="البريد الإلكتروني">
-        <input type="password" id="password" placeholder="كلمة السر">
+        <div class="pass-wrapper">
+            <span class="toggle-pass" onclick="togglePassword()">👁️</span>
+            <input type="password" id="password" placeholder="كلمة السر">
+        </div>
         <input type="text" id="username" placeholder="اليوزرنام">
         <button class="btn" onclick="authAction('login')">دخول</button>
-        <button class="btn" style="background:none; border:1px solid #555;" onclick="authAction('register')">حساب جديد</button>
-        <a href="https://whatsapp.com/channel/0029VauVHXtEwEk3p5hgcd3j" target="_blank" class="btn btn-wa" style="margin-top:10px;">📢 قناة التواصل الرسمية</a>
+        <button class="btn" style="background:none; border:1px solid #444;" onclick="authAction('register')">فتح حساب</button>
     </div>
 
     <div id="mainPage" style="display: none;">
         <div class="card">
+            <div class="profile-img">👤</div>
             <h2 id="helloUser">@username</h2>
             <div id="visitorActions" style="display: none; margin-top:15px;">
-                <textarea id="msgInput" maxlength="2000" oninput="updateCounter()" placeholder="اكتب رسالة سرية بخصوصية تامة..."></textarea>
-                <div class="char-counter"><span id="currentChar">0</span>/2000</div>
-                <button class="btn" onclick="sendMsg()">إرسال الرسالة 🚀</button>
+                <textarea id="msgInput" maxlength="2000" oninput="document.getElementById('curr').innerText=this.value.length" placeholder="اكتب صراحتك هنا..."></textarea>
+                <div style="text-align:left; font-size:0.7rem; color:#666;"><span id="curr">0</span>/2000</div>
+                <button class="btn" onclick="sendMsg()">إرسال 🚀</button>
             </div>
             <div id="ownerActions">
-                <div onclick="copyLink()" style="background:rgba(255,255,255,0.05); padding:15px; border:1px dashed var(--primary); color:var(--primary); cursor:pointer; margin-bottom:10px; border-radius:15px; font-weight:bold;">انسخ رابطك وانشره 🔗</div>
+                <button class="btn" onclick="copyLink()">نسخ رابط حسابك 🔗</button>
+                <a href="https://whatsapp.com/channel/0029VauVHXtEwEk3p5hgcd3j" target="_blank" class="btn btn-wa">📢 قناة التواصل</a>
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
-                    <button class="btn" style="background:rgba(255,255,255,0.1); border:1px solid #444; font-size:0.75rem;" onclick="changePass()">🔐 كلمة السر</button>
-                    <button class="btn btn-danger" onclick="deleteAccount()">🗑️ حذف الحساب</button>
+                    <button class="btn" style="background:rgba(255,255,255,0.1); border:1px solid #444; font-size:0.7rem;" onclick="changePass()">🔐 السر</button>
+                    <button class="btn" style="background:var(--danger); font-size:0.7rem;" onclick="deleteAccount()">🗑️ حذف الحساب</button>
                 </div>
-                <button onclick="logout()" style="color:gray; background:none; border:none; margin-top:15px; cursor:pointer;">تسجيل خروج 🚪</button>
+                <button onclick="logout()" style="color:gray; background:none; border:none; margin-top:15px; cursor:pointer;">خروج 🚪</button>
             </div>
         </div>
-        <div id="myMessagesSection">
-            <h3 style="text-align: right; margin-bottom:15px; color:var(--primary);">الرسائل المستلمة 📥</h3>
-            <div id="messagesContainer"></div>
-        </div>
+        <div id="messagesContainer"></div>
     </div>
 </div>
 
 <script>
-    // نظام الإشعارات الأنيق
-    function showMsg(text) {
-        const container = document.getElementById('toast-container');
-        const toast = document.createElement('div');
-        toast.className = 'toast';
-        toast.innerHTML = `✨ <span>${text}</span>`;
-        container.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
+    function showMsg(t) {
+        const c = document.getElementById('toast-container');
+        const s = document.createElement('div'); s.className = 'toast'; s.innerText = t;
+        c.appendChild(s); setTimeout(() => s.remove(), 3000);
     }
 
-    function updateCounter() { document.getElementById('currentChar').innerText = document.getElementById('msgInput').value.length; }
+    function togglePassword() {
+        const p = document.getElementById('password');
+        p.type = p.type === 'password' ? 'text' : 'password';
+    }
 
-    // المحرك البصري
+    // المحرك البصري (11 خلفية وطقس)
     const canvas = document.getElementById('effectCanvas');
     const ctx = canvas.getContext('2d');
     let particles = [], bgIndex = 0;
@@ -144,102 +147,76 @@
     }
     init(); animate();
 
-    // Firebase
-    const firebaseConfig = {
-        apiKey: "AIzaSyDhz9GpeZE5N78OquK61dQ_pkqTGKbZegc",
-        authDomain: "saiko-a6971.firebaseapp.com",
-        projectId: "saiko-a6971",
-        storageBucket: "saiko-a6971.firebasestorage.app",
-        messagingSenderId: "946021136402",
-        appId: "1:946021136402:web:3f58bccc68de0663c940cb"
-    };
+    // Firebase (ضع إعداداتك هنا)
+    const firebaseConfig = { apiKey: "...", /* إلخ */ };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth(), db = firebase.firestore();
 
-    async function authAction(type) {
+    async function authAction(t) {
         const e = document.getElementById('email').value, p = document.getElementById('password').value, u = document.getElementById('username').value.toLowerCase().trim();
         try {
-            if (type === 'register') {
+            if(t==='register') {
                 const res = await auth.createUserWithEmailAndPassword(e, p);
                 await db.collection('users').doc(u).set({ email: e, uid: res.user.uid });
                 localStorage.setItem('saiko_username', u);
-                showMsg("تم إنشاء الحساب بنجاح! 🎊");
             } else {
                 await auth.signInWithEmailAndPassword(e, p);
-                const snap = await db.collection('users').where('email', '==', e).get();
+                const snap = await db.collection('users').where('email','==',e).get();
                 snap.forEach(doc => localStorage.setItem('saiko_username', doc.id));
-                showMsg("تم تسجيل الدخول! أهلاً بك 🔓");
             }
-            setTimeout(() => location.reload(), 1500);
-        } catch (err) { showMsg(err.message); }
+            location.reload();
+        } catch(err) { showMsg(err.message); }
     }
 
     function loadContent(user, isOwner) {
         db.collection('messages').where('to', '==', user).orderBy('time', 'desc').onSnapshot(snap => {
             const container = document.getElementById('messagesContainer');
-            if(isOwner) {
-                container.innerHTML = '';
-                snap.forEach(doc => {
-                    const data = doc.data();
-                    const date = data.time ? new Date(data.time).toLocaleString('ar-EG', {hour:'2-digit', minute:'2-digit'}) : '';
-                    const div = document.createElement('div');
-                    div.className = 'message-card'; div.id = 'msg-' + doc.id;
-                    div.innerHTML = `
-                        <div class="message-content">${data.text}</div>
-                        <div class="message-time">${date}</div>
-                        <div class="msg-tools">
-                            <button class="tool-btn" onclick="saveImg('msg-${doc.id}')">📸 تصوير</button>
-                            <button class="tool-btn" style="color:red" onclick="deleteMsg('${doc.id}')">🗑️ حذف</button>
-                        </div>`;
-                    container.appendChild(div);
-                });
-            }
+            container.innerHTML = isOwner ? '<h3 style="text-align:right; margin:10px 0;">الرسائل المستلمة</h3>' : '';
+            snap.forEach(doc => {
+                const d = doc.data();
+                const div = document.createElement('div');
+                div.className = 'message-card'; div.id = 'msg-' + doc.id;
+                div.innerHTML = `
+                    <div class="msg-stats">
+                        <span onclick="this.classList.toggle('active-like'); showMsg('إعجاب ❤️')">❤️ إعجاب</span>
+                        <span onclick="this.classList.toggle('active-fav'); showMsg('مفضلة ⭐')">⭐ مفضلة</span>
+                        <span>👁️ ${Math.floor(Math.random()*20)} عرض</span>
+                    </div>
+                    <div style="text-align:right;">${d.text}</div>
+                    <div class="msg-tools">
+                        <button class="tool-btn" onclick="saveImg('msg-${doc.id}')">📸 تصوير</button>
+                        ${isOwner ? `<button class="tool-btn" style="color:red" onclick="deleteMsg('${doc.id}')">🗑️ حذف</button>` : ''}
+                    </div>`;
+                container.appendChild(div);
+            });
         });
     }
 
     async function sendMsg() {
         const to = new URLSearchParams(window.location.search).get('to');
         const txt = document.getElementById('msgInput').value.trim();
-        if(txt) { 
-            await db.collection('messages').add({ to: to, text: txt, time: Date.now() }); 
-            showMsg("تم إرسال رسالتك بنجاح! ✅"); 
-            document.getElementById('msgInput').value = ''; updateCounter(); 
-        } else { showMsg("الرسالة فارغة! ⚠️"); }
+        if(txt) {
+            await db.collection('messages').add({ to: to, text: txt, time: Date.now() });
+            showMsg("تم الإرسال! ✅"); document.getElementById('msgInput').value = '';
+        }
     }
 
     function saveImg(id) {
         const el = document.getElementById(id);
-        el.querySelector('.msg-tools').style.display = 'none';
+        const tools = el.querySelector('.msg-tools'); tools.style.display = 'none';
         html2canvas(el, { backgroundColor: '#111' }).then(c => {
-            const a = document.createElement('a'); a.download = 'saiko_msg.png'; a.href = c.toDataURL(); a.click();
-            el.querySelector('.msg-tools').style.display = 'flex';
-            showMsg("تم حفظ الصورة! 📸");
+            const a = document.createElement('a'); a.download = 'saiko.png'; a.href = c.toDataURL(); a.click();
+            tools.style.display = 'flex'; showMsg("تم حفظ الصورة 📸");
         });
     }
 
-    async function changePass() { 
-        const np = prompt("أدخل كلمة السر الجديدة (6 حروف على الأقل):"); 
-        if(np && np.length >= 6) {
-            await auth.currentUser.updatePassword(np).then(() => showMsg("تم تحديث كلمة السر! ✅")).catch(() => logout()); 
-        }
-    }
-
-    async function deleteAccount() { 
-        if(confirm("⚠️ تحذير: سيتم حذف حسابك وكل رسائلك نهائياً. هل أنت متأكد؟")) { 
-            const u = localStorage.getItem('saiko_username'); 
-            await db.collection('users').doc(u).delete(); 
-            await auth.currentUser.delete(); 
-            showMsg("تم حذف الحساب نهائياً 🗑️");
-            setTimeout(() => logout(), 1500);
-        } 
-    }
-
-    async function deleteMsg(id) { if(confirm("حذف الرسالة؟")) { await db.collection('messages').doc(id).delete(); showMsg("تم الحذف! 🗑️"); } }
+    async function deleteAccount() { if(confirm("حذف نهائي؟")) { const u = localStorage.getItem('saiko_username'); await db.collection('users').doc(u).delete(); await auth.currentUser.delete(); logout(); } }
+    async function deleteMsg(id) { if(confirm("حذف؟")) await db.collection('messages').doc(id).delete(); }
     function logout() { auth.signOut(); localStorage.clear(); location.reload(); }
     function copyLink() {
         const u = localStorage.getItem('saiko_username');
         const link = window.location.origin + window.location.pathname + "?to=" + u;
-        navigator.clipboard.writeText(link); showMsg("تم نسخ رابطك بنجاح! 🔗");
+        navigator.clipboard.writeText(link); showMsg("تم النسخ 🔗");
     }
 
     auth.onAuthStateChanged(user => {
@@ -247,11 +224,11 @@
         if (to) {
             document.getElementById('authPage').style.display='none'; document.getElementById('mainPage').style.display='block';
             document.getElementById('visitorActions').style.display='block'; document.getElementById('ownerActions').style.display='none';
-            document.getElementById('helloUser').innerText = "إرسال لـ @" + to; loadContent(to, false);
+            document.getElementById('helloUser').innerText = "لـ @" + to;
         } else if (user) {
             document.getElementById('authPage').style.display='none'; document.getElementById('mainPage').style.display='block';
-            const myU = localStorage.getItem('saiko_username');
-            document.getElementById('helloUser').innerText = "أهلاً @" + myU; loadContent(myU, true);
+            const u = localStorage.getItem('saiko_username');
+            document.getElementById('helloUser').innerText = "@" + u; loadContent(u, true);
         }
     });
 </script>
