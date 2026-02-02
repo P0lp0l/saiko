@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAIKO PRO | النسخة الأسطورية</title>
+    <title>SAIKO PRO | النسخة النهائية 🚀</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -14,42 +14,43 @@
     <style>
         :root { --primary: #ff006e; --secondary: #8338ec; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
-        
         body { margin: 0; min-height: 100vh; color: white; transition: background 2s ease; overflow-x: hidden; background: #000; }
-
-        /* طبقة البرق */
-        #lightning {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; opacity: 0; z-index: 1; pointer-events: none;
-        }
-        canvas { position: fixed; top: 0; left: 0; z-index: 2; pointer-events: none; }
-
-        .container { max-width: 500px; margin: 0 auto; padding: 20px; position: relative; z-index: 10; }
         
-        /* أنماط الخلفيات */
-        .sunset-bg { background: linear-gradient(to bottom, #200122, #6f0000, #fb8c00); }
-        .rain-bg { background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e); }
-        .hearts-bg { background: linear-gradient(to bottom, #4e085e, #ff006e, #200122); }
-        .storm-bg { background: linear-gradient(to bottom, #000, #130f40, #000); }
+        /* طبقات التأثيرات */
+        #lightning { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; opacity: 0; z-index: 1; pointer-events: none; }
+        canvas { position: fixed; top: 0; left: 0; z-index: 2; pointer-events: none; }
+        .container { max-width: 500px; margin: 0 auto; padding: 20px; position: relative; z-index: 10; }
 
-        .card { 
-            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(12px); 
-            padding: 25px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
+        /* الخلفيات الـ 11 */
+        .bg-0 { background: linear-gradient(to bottom, #200122, #6f0000, #fb8c00); } /* غروب */
+        .bg-1 { background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e); } /* مطر */
+        .bg-2 { background: linear-gradient(to bottom, #4e085e, #ff006e, #200122); } /* قلوب */
+        .bg-3 { background: linear-gradient(to bottom, #000, #130f40, #000); } /* عاصفة */
+        .bg-4 { background: linear-gradient(to bottom, #000428, #004e92); } /* محيط */
+        .bg-5 { background: linear-gradient(to bottom, #1d2671, #c33764); } /* سديم */
+        .bg-6 { background: linear-gradient(to bottom, #0f2027, #2c5364); } /* ليل */
+        .bg-7 { background: linear-gradient(to right, #11998e, #38ef7d); } /* طاقة */
+        .bg-8 { background: linear-gradient(to bottom, #8e2de2, #4a00e0); } /* مجرة */
+        .bg-9 { background: linear-gradient(to bottom, #f12711, #f5af19); } /* بركان */
+        .bg-10 { background: linear-gradient(to bottom, #1e1e2f, #11111d); } /* كلاسيك */
 
-        input, textarea { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 12px; border: 1px solid #444; background: rgba(0,0,0,0.4); color: white; text-align: center; }
-        .btn { width: 100%; padding: 12px; border-radius: 12px; border: none; background: linear-gradient(45deg, var(--primary), var(--secondary)); color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn:hover { transform: scale(1.02); }
+        .card { background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(15px); padding: 25px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; text-align: center; }
+        .stats-row { display: flex; justify-content: center; gap: 15px; margin: 15px 0; }
+        .stat-box { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 15px; flex: 1; border: 1px solid rgba(255,255,255,0.1); }
+        .stat-num { display: block; font-size: 1.4rem; font-weight: 900; color: var(--primary); }
 
-        .message-card { background: rgba(255,255,255,0.08); padding: 18px; border-radius: 20px; margin-bottom: 15px; border-right: 5px solid var(--primary); position: relative; }
-        .msg-tools { display: flex; gap: 8px; margin-top: 12px; }
-        .tool-btn { background: rgba(255,255,255,0.1); border: none; color: white; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; }
-        .tool-btn.active { background: #ffbe0b; color: black; }
-        .badge { background: #00f2ff; color: black; font-size: 0.7rem; padding: 2px 7px; border-radius: 5px; font-weight: bold; margin-bottom: 5px; display: inline-block; }
+        input, textarea { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 12px; border: 1px solid #444; background: rgba(0,0,0,0.5); color: white; text-align: center; }
+        .btn { width: 100%; padding: 12px; border-radius: 12px; border: none; background: linear-gradient(45deg, var(--primary), var(--secondary)); color: white; font-weight: bold; cursor: pointer; transition: 0.3s; margin-bottom: 5px; }
+        .btn:active { transform: scale(0.95); }
+        
+        .message-card { background: rgba(255,255,255,0.08); padding: 15px; border-radius: 20px; margin-bottom: 12px; border-right: 5px solid var(--primary); text-align: right; position: relative; }
+        .msg-tools { display: flex; gap: 8px; margin-top: 10px; }
+        .tool-btn { background: rgba(255,255,255,0.1); border: none; color: white; padding: 5px 10px; border-radius: 8px; cursor: pointer; font-size: 0.7rem; }
+        .tool-btn.active { background: #ffbe0b; color: #000; }
+        .badge { background: #00f2ff; color: #000; font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; margin-bottom: 5px; display: inline-block; }
     </style>
 </head>
-<body class="sunset-bg">
+<body class="bg-0">
 
 <div id="lightning"></div>
 <canvas id="effectCanvas"></canvas>
@@ -57,100 +58,97 @@
 <div class="container">
     <div id="authPage" class="card">
         <h1 style="color: var(--primary); margin-bottom: 5px;">SAIKO PRO 🚀</h1>
-        <p id="weatherStatus" style="font-size: 0.8rem; margin-bottom: 20px; color: #bbb;">الحالة: الغروب الهادئ 🌅</p>
+        <p id="weatherStatus" style="font-size: 0.8rem; margin-bottom: 20px; color: #aaa;">تهيئة الأجواء...</p>
         <input type="email" id="email" placeholder="البريد الإلكتروني">
         <input type="password" id="password" placeholder="كلمة السر">
         <input type="text" id="username" placeholder="اليوزرنام (جديد)">
         <button class="btn" onclick="authAction('login')">تسجيل الدخول</button>
-        <button class="btn" style="background:none; border:1px solid #555; margin-top:10px;" onclick="authAction('register')">فتح حساب جديد</button>
+        <button class="btn" style="background:none; border:1px solid #444;" onclick="authAction('register')">إنشاء حساب جديد</button>
     </div>
 
     <div id="mainPage" style="display: none;">
         <div class="card">
             <h2 id="helloUser">@username</h2>
-            <div id="ownerSection">
-                <div onclick="copyMyLink()" style="background:#111; padding:10px; border-radius:10px; font-size:0.8rem; color:var(--primary); cursor:pointer; margin:15px 0; border:1px dashed #444;">انقر لنسخ رابطك ونشره 🔗</div>
-                <button onclick="logout()" style="color:#ff4d4d; background:none; border:none; cursor:pointer; font-size:0.9rem;">خروج 🚪</button>
+            
+            <div class="stats-row">
+                <div class="stat-box"><span class="stat-num" id="likesCount">0</span>إعجاب</div>
+                <div class="stat-box"><span class="stat-num" id="followsCount">0</span>متابع</div>
             </div>
 
-            <div id="visitorSection" style="display: none;">
-                <textarea id="msgInput" placeholder="اكتب رسالتك السرية هنا..."></textarea>
-                <button class="btn" onclick="sendMsg()">إرسال الرسالة 🚀</button>
-                <div id="publicWall" style="margin-top:25px; text-align:right;">
-                    <h4 style="color:#ffbe0b">📌 رسائل مختارة من البروفايل:</h4>
-                    <div id="publicContainer"></div>
+            <div id="visitorActions" style="display: none;">
+                <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+                    <button class="btn" onclick="addStat('likes')" style="background:#ff4757;">❤️ إعجاب</button>
+                    <button class="btn" onclick="addStat('followers')" style="background:#3a86ff;">👤 متابعة</button>
                 </div>
+                <textarea id="msgInput" placeholder="اكتب رسالتك السرية..."></textarea>
+                <button class="btn" onclick="sendMsg()">إرسال 🚀</button>
+            </div>
+
+            <div id="ownerActions">
+                <p id="myLink" onclick="copyLink()" style="font-size: 0.75rem; color: var(--primary); cursor: pointer; border: 1px dashed; padding: 10px; border-radius: 10px;">انسخ رابطك وانشره 🔗</p>
+                <button onclick="logout()" style="background:none; border:none; color:red; margin-top:15px; cursor:pointer;">خروج 🚪</button>
             </div>
         </div>
 
+        <div id="publicWall" style="display:none; margin-bottom: 20px;">
+            <h4 style="color:#ffbe0b; text-align:right; margin-bottom:10px;">📌 رسائل معروضة:</h4>
+            <div id="publicContainer"></div>
+        </div>
+
         <div id="myMessagesSection">
-            <h3 style="margin-bottom:15px; border-bottom:1px solid #333; padding-bottom:10px;">📥 بريدي الوارد:</h3>
+            <h3 style="margin-bottom: 15px; text-align: right;">📥 صندوق الرسائل:</h3>
             <div id="messagesContainer"></div>
         </div>
     </div>
 </div>
 
 <script>
-    // --- محرك الخلفيات المتغيرة ---
+    // --- محرك الخلفيات الـ 11 والمؤثرات ---
     const canvas = document.getElementById('effectCanvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
-    let currentMode = 'sunset'; 
+    let bgIndex = 0;
+    const weatherNames = ["الغروب الدافئ", "الأمطار الغزيرة", "هطول القلوب", "عاصفة الرعد", "أعماق المحيط", "سديم الفضاء", "غابة الغموض", "طاقة الزمرد", "مجرة الثقب الأسود", "حمم البركان", "ليلة كلاسيكية"];
 
-    function initCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-
+    function initCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     class Particle {
-        constructor(mode) { this.mode = mode; this.reset(); }
+        constructor(type) { this.type = type; this.reset(); }
         reset() {
             this.x = Math.random() * canvas.width;
             this.y = Math.random() * canvas.height - canvas.height;
-            this.speed = Math.random() * 4 + 2;
+            this.speed = Math.random() * 5 + 2;
             this.size = Math.random() * 2 + 1;
         }
         draw() {
-            if (this.mode === 'rain') {
-                ctx.strokeStyle = 'rgba(255,255,255,0.2)';
-                ctx.beginPath(); ctx.moveTo(this.x, this.y); ctx.lineTo(this.x, this.y + 12); ctx.stroke();
-            } else if (this.mode === 'hearts') {
-                ctx.font = '14px Arial'; ctx.fillText('❤️', this.x, this.y);
-            }
+            ctx.fillStyle = "rgba(255,255,255,0.4)";
+            if(this.type === 'rain') { ctx.fillRect(this.x, this.y, 1, 15); }
+            else if(this.type === 'hearts') { ctx.font='15px Arial'; ctx.fillText('❤️', this.x, this.y); }
+            else if(this.type === 'snow') { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill(); }
         }
-        update() {
-            this.y += this.speed;
-            if (this.y > canvas.height) this.reset();
-        }
+        update() { this.y += this.speed; if(this.y > canvas.height) this.reset(); }
     }
 
-    function changeWeather() {
-        const modes = ['sunset', 'rain', 'hearts', 'storm'];
-        const status = ["الغروب الهادئ 🌅", "أجواء ممطرة 🌧️", "نبض القلوب ❤️", "عاصفة رعدية ⚡"];
-        let i = 0;
-        setInterval(() => {
-            i = (i + 1) % modes.length;
-            currentMode = modes[i];
-            document.body.className = currentMode + '-bg';
-            document.getElementById('weatherStatus').innerText = "الحالة: " + status[i];
-            particles = [];
-            let count = (currentMode === 'rain') ? 80 : (currentMode === 'hearts') ? 25 : 0;
-            for(let j=0; j<count; j++) particles.push(new Particle(currentMode));
-        }, 12000);
-    }
+    setInterval(() => {
+        bgIndex = (bgIndex + 1) % 11;
+        document.body.className = 'bg-' + bgIndex;
+        document.getElementById('weatherStatus').innerText = "الحالة: " + weatherNames[bgIndex];
+        particles = [];
+        let type = bgIndex === 1 ? 'rain' : bgIndex === 2 ? 'hearts' : (bgIndex === 5 || bgIndex === 8) ? 'snow' : 'none';
+        if(type !== 'none') for(let i=0; i<60; i++) particles.push(new Particle(type));
+    }, 10000);
 
     function animate() {
-        ctx.clearRect(0,0,canvas.width, canvas.height);
+        ctx.clearRect(0,0,canvas.width,canvas.height);
         particles.forEach(p => { p.update(); p.draw(); });
-        if (currentMode === 'storm' && Math.random() > 0.97) {
-            document.getElementById('lightning').style.opacity = 0.4;
-            setTimeout(() => document.getElementById('lightning').style.opacity = 0, 60);
+        if(bgIndex === 3 && Math.random() > 0.98) {
+            document.getElementById('lightning').style.opacity = 0.5;
+            setTimeout(() => document.getElementById('lightning').style.opacity = 0, 50);
         }
         requestAnimationFrame(animate);
     }
-    initCanvas(); animate(); changeWeather(); window.addEventListener('resize', initCanvas);
+    initCanvas(); animate(); window.onresize = initCanvas;
 
-    // --- Firebase Logic ---
+    // --- Firebase Configuration ---
     const firebaseConfig = {
         apiKey: "AIzaSyDhz9GpeZE5N78OquK61dQ_pkqTGKbZegc",
         authDomain: "saiko-a6971.firebaseapp.com",
@@ -167,9 +165,8 @@
         const e = document.getElementById('email').value, p = document.getElementById('password').value, u = document.getElementById('username').value.toLowerCase().trim();
         try {
             if (type === 'register') {
-                if(!u || p.length < 6) throw new Error("اليوزرنام مطلوب والباسورد 6+ رموز");
                 const res = await auth.createUserWithEmailAndPassword(e, p);
-                await db.collection('users').doc(u).set({ email: e, uid: res.user.uid });
+                await db.collection('users').doc(u).set({ email: e, uid: res.user.uid, likes: 0, followers: 0 });
                 localStorage.setItem('saiko_username', u);
             } else {
                 await auth.signInWithEmailAndPassword(e, p);
@@ -181,36 +178,59 @@
     }
 
     function loadContent(user, isOwner) {
+        db.collection('users').doc(user).onSnapshot(doc => {
+            if(doc.exists) {
+                document.getElementById('likesCount').innerText = doc.data().likes || 0;
+                document.getElementById('followsCount').innerText = doc.data().followers || 0;
+            }
+        });
+
+        // جلب الرسائل
         let q = db.collection('messages').where('to', '==', user);
-        if(!isOwner) q = q.where('isPublic', '==', true);
-        
         q.onSnapshot(snap => {
-            const container = isOwner ? document.getElementById('messagesContainer') : document.getElementById('publicContainer');
-            container.innerHTML = '';
+            const myContainer = document.getElementById('messagesContainer');
+            const pubContainer = document.getElementById('publicContainer');
+            if(isOwner) myContainer.innerHTML = '';
+            pubContainer.innerHTML = '';
+            
             snap.forEach(doc => {
                 const d = doc.data();
-                const card = document.createElement('div');
-                card.className = 'message-card';
-                card.id = doc.id;
-                card.innerHTML = `
-                    ${d.isPublic ? '<span class="badge">معروض للعامة</span>' : ''}
-                    <p>${d.text}</p>
-                    <div class="msg-tools">
-                        <button class="tool-btn" onclick="saveAsImg('${doc.id}')">📸 حفظ</button>
-                        ${isOwner ? `
-                            <button class="tool-btn ${d.isFav ? 'active' : ''}" onclick="updateMsg('${doc.id}', 'isFav')">⭐</button>
-                            <button class="tool-btn ${d.isPublic ? 'active' : ''}" onclick="updateMsg('${doc.id}', 'isPublic')">👁️ عرض</button>
-                        ` : ''}
-                    </div>
-                `;
-                container.appendChild(card);
+                const card = createMsgCard(doc.id, d, isOwner);
+                if(isOwner) myContainer.appendChild(card);
+                if(d.isPublic) {
+                    document.getElementById('publicWall').style.display = 'block';
+                    pubContainer.appendChild(createMsgCard(doc.id, d, false));
+                }
             });
         });
     }
 
-    async function updateMsg(id, field) {
-        const doc = await db.collection('messages').doc(id).get();
-        await db.collection('messages').doc(id).update({ [field]: !doc.data()[field] });
+    function createMsgCard(id, data, isOwner) {
+        const div = document.createElement('div');
+        div.className = 'message-card';
+        div.id = id;
+        div.innerHTML = `
+            ${data.isPublic ? '<span class="badge">معروض للكل</span>' : ''}
+            <p>${data.text}</p>
+            <div class="msg-tools">
+                <button class="tool-btn" onclick="saveImg('${id}')">📸 حفظ</button>
+                ${isOwner ? `
+                    <button class="tool-btn ${data.isFav ? 'active' : ''}" onclick="toggle('${id}','isFav')">⭐</button>
+                    <button class="tool-btn ${data.isPublic ? 'active' : ''}" onclick="toggle('${id}','isPublic')">👁️</button>
+                ` : ''}
+            </div>
+        `;
+        return div;
+    }
+
+    async function toggle(id, field) {
+        const snap = await db.collection('messages').doc(id).get();
+        await db.collection('messages').doc(id).update({ [field]: !snap.data()[field] });
+    }
+
+    async function addStat(field) {
+        const to = new URLSearchParams(window.location.search).get('to');
+        await db.collection('users').doc(to).update({ [field]: firebase.firestore.FieldValue.increment(1) });
     }
 
     async function sendMsg() {
@@ -218,35 +238,24 @@
         const txt = document.getElementById('msgInput').value;
         if(!txt) return;
         await db.collection('messages').add({ to: to, text: txt, isPublic: false, isFav: false, time: firebase.firestore.FieldValue.serverTimestamp() });
-        alert("تم الإرسال! ✅"); document.getElementById('msgInput').value = '';
+        alert("وصلت رسالتك! ✅"); document.getElementById('msgInput').value = '';
     }
 
-    function saveAsImg(id) {
-        const node = document.getElementById(id);
-        html2canvas(node, { backgroundColor: '#1a1a1a', scale: 2 }).then(canvas => {
-            const a = document.createElement('a'); a.download = 'saiko_share.png'; a.href = canvas.toDataURL(); a.click();
-        });
-    }
-
+    function saveImg(id) { html2canvas(document.getElementById(id), {backgroundColor: '#111'}).then(c => { const a=document.createElement('a'); a.download='saiko.png'; a.href=c.toDataURL(); a.click(); }); }
     function logout() { auth.signOut(); localStorage.clear(); location.reload(); }
-    function copyMyLink() { navigator.clipboard.writeText(window.location.origin + window.location.pathname + "?to=" + localStorage.getItem('saiko_username')); alert("تم نسخ رابطك!"); }
+    function copyLink() { navigator.clipboard.writeText(window.location.href); alert("تم نسخ رابط بروفايلك! انشره الآن 🔥"); }
 
     auth.onAuthStateChanged(user => {
         const to = new URLSearchParams(window.location.search).get('to');
         if (to) {
-            document.getElementById('authPage').style.display = 'none';
-            document.getElementById('mainPage').style.display = 'block';
-            document.getElementById('visitorSection').style.display = 'block';
-            document.getElementById('ownerSection').style.display = 'none';
+            document.getElementById('authPage').style.display = 'none'; document.getElementById('mainPage').style.display = 'block';
+            document.getElementById('visitorActions').style.display = 'block'; document.getElementById('ownerActions').style.display = 'none';
             document.getElementById('myMessagesSection').style.display = 'none';
-            document.getElementById('helloUser').innerText = "@" + to;
-            loadContent(to, false);
+            document.getElementById('helloUser').innerText = "@" + to; loadContent(to, false);
         } else if (user) {
-            document.getElementById('authPage').style.display = 'none';
-            document.getElementById('mainPage').style.display = 'block';
+            document.getElementById('authPage').style.display = 'none'; document.getElementById('mainPage').style.display = 'block';
             const myU = localStorage.getItem('saiko_username');
-            document.getElementById('helloUser').innerText = "مرحباً @" + myU;
-            loadContent(myU, true);
+            document.getElementById('helloUser').innerText = "مرحباً @" + myU; loadContent(myU, true);
         }
     });
 </script>
