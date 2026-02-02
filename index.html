@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAIKO PRO | المتكاملة 🚀</title>
+    <title>SAIKO PRO | النسخة النهائية 🚀</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -12,7 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
-        :root { --primary: #ff006e; --secondary: #8338ec; --whatsapp: #25d366; }
+        :root { --primary: #ff006e; --secondary: #8338ec; --whatsapp: #25d366; --danger: #d00000; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
         body { margin: 0; min-height: 100vh; color: white; transition: background 2s ease; overflow-x: hidden; background: #000; }
         
@@ -20,7 +20,23 @@
         #lightning { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; opacity: 0; z-index: 1; pointer-events: none; }
         .container { max-width: 500px; margin: 0 auto; padding: 20px; position: relative; z-index: 10; }
 
-        /* الخلفيات الـ 11 */
+        .card { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(20px); padding: 25px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; text-align: center; }
+        .stats-row { display: flex; justify-content: center; gap: 15px; margin: 15px 0; }
+        .stat-box { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 15px; flex: 1; border: 1px solid rgba(255,255,255,0.1); }
+        .stat-num { display: block; font-size: 1.4rem; font-weight: 900; color: var(--primary); }
+
+        input, textarea { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 15px; border: 1px solid #444; background: rgba(0,0,0,0.6); color: white; text-align: center; font-size: 1rem; }
+        .btn { width: 100%; padding: 12px; border-radius: 12px; border: none; background: linear-gradient(45deg, var(--primary), var(--secondary)); color: white; font-weight: bold; cursor: pointer; margin-bottom: 5px; }
+        
+        .btn-wa { background: var(--whatsapp); text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem; }
+        .btn-danger { background: var(--danger) !important; font-size: 0.8rem; margin-top: 10px; }
+        .btn-settings { background: rgba(255,255,255,0.1); border: 1px solid #444; font-size: 0.8rem; }
+
+        .message-card { background: rgba(255,255,255,0.08); padding: 18px; border-radius: 20px; margin-bottom: 15px; border-right: 5px solid var(--primary); text-align: right; }
+        .msg-tools { display: flex; gap: 8px; margin-top: 12px; }
+        .tool-btn { background: rgba(255,255,255,0.1); border: none; color: white; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.75rem; }
+        
+        /* انماط الخلفيات */
         .bg-0 { background: linear-gradient(to bottom, #200122, #6f0000, #fb8c00); }
         .bg-1 { background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e); }
         .bg-2 { background: linear-gradient(to bottom, #4e085e, #ff006e, #200122); }
@@ -32,23 +48,6 @@
         .bg-8 { background: linear-gradient(to bottom, #8e2de2, #4a00e0); }
         .bg-9 { background: linear-gradient(to bottom, #f12711, #f5af19); }
         .bg-10 { background: linear-gradient(to bottom, #1e1e2f, #11111d); }
-
-        .card { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(20px); padding: 25px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; text-align: center; }
-        .stats-row { display: flex; justify-content: center; gap: 15px; margin: 15px 0; }
-        .stat-box { background: rgba(255,255,255,0.05); padding: 10px; border-radius: 15px; flex: 1; border: 1px solid rgba(255,255,255,0.1); }
-        .stat-num { display: block; font-size: 1.4rem; font-weight: 900; color: var(--primary); }
-
-        input, textarea { width: 100%; padding: 15px; margin-bottom: 10px; border-radius: 15px; border: 1px solid #444; background: rgba(0,0,0,0.6); color: white; text-align: center; font-size: 1rem; }
-        .btn { width: 100%; padding: 12px; border-radius: 12px; border: none; background: linear-gradient(45deg, var(--primary), var(--secondary)); color: white; font-weight: bold; cursor: pointer; margin-bottom: 5px; }
-        
-        /* زر واتساب */
-        .btn-wa { background: var(--whatsapp); text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.9rem; }
-        
-        .message-card { background: rgba(255,255,255,0.08); padding: 18px; border-radius: 20px; margin-bottom: 15px; border-right: 5px solid var(--primary); text-align: right; }
-        .msg-tools { display: flex; gap: 8px; margin-top: 12px; }
-        .tool-btn { background: rgba(255,255,255,0.1); border: none; color: white; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.75rem; }
-        .btn-delete { background: #ff4d4d !important; }
-        .btn-show.active { background: #ffbe0b !important; color: #000; }
     </style>
 </head>
 <body class="bg-0">
@@ -58,21 +57,15 @@
 
 <div class="container">
     <div id="authPage" class="card">
-        <h1 style="color: var(--primary); font-size: 2.5rem; margin-bottom: 10px;">SAIKO PRO</h1>
-        <p id="weatherStatus" style="font-size: 0.8rem; margin-bottom: 25px; color: #aaa;">تهيئة الأجواء...</p>
-        
+        <h1 style="color: var(--primary); font-size: 2.5rem;">SAIKO PRO</h1>
+        <p id="weatherStatus" style="font-size: 0.8rem; margin-bottom: 25px; color: #aaa;">تهيئة...</p>
         <input type="email" id="email" placeholder="البريد الإلكتروني">
         <input type="password" id="password" placeholder="كلمة السر">
-        <input type="text" id="username" placeholder="اليوزرنام (رابطك الخاص)">
-        
-        <button class="btn" onclick="authAction('login')">تسجيل الدخول</button>
-        <button class="btn" style="background:none; border:1px solid #555;" onclick="authAction('register')">إنشاء حساب جديد</button>
-        
-        <hr style="margin: 20px 0; border: 0.5px solid rgba(255,255,255,0.1);">
-        
-        <a href="https://whatsapp.com/channel/0029VauVHXtEwEk3p5hgcd3j" target="_blank" class="btn btn-wa">
-            📢 تابع قناة التواصل الرسمية
-        </a>
+        <input type="text" id="username" placeholder="اليوزرنام">
+        <button class="btn" onclick="authAction('login')">دخول</button>
+        <button class="btn" style="background:none; border:1px solid #555;" onclick="authAction('register')">حساب جديد</button>
+        <hr style="margin: 20px 0; border: 0.1px solid rgba(255,255,255,0.1);">
+        <a href="https://whatsapp.com/channel/0029VauVHXtEwEk3p5hgcd3j" target="_blank" class="btn btn-wa">📢 قناة التواصل الرسمية</a>
     </div>
 
     <div id="mainPage" style="display: none;">
@@ -94,68 +87,54 @@
 
             <div id="ownerActions">
                 <div onclick="copyLink()" style="background:rgba(255,255,255,0.05); padding:15px; border:1px dashed var(--primary); color:var(--primary); cursor:pointer; margin-bottom:10px; border-radius:15px;">انسخ رابطك وانشره 🔗</div>
+                <a href="https://whatsapp.com/channel/0029VauVHXtEwEk3p5hgcd3j" target="_blank" class="btn btn-wa">📢 قناة التواصل</a>
                 
-                <a href="https://whatsapp.com/channel/0029VauVHXtEwEk3p5hgcd3j" target="_blank" class="btn btn-wa" style="margin-bottom: 15px;">
-                   📢 قناة التواصل
-                </a>
-
-                <button onclick="logout()" style="color:red; background:none; border:none; cursor:pointer;">خروج 🚪</button>
+                <div style="margin-top: 20px; border-top: 1px solid #333; padding-top: 15px;">
+                    <button class="btn btn-settings" onclick="changePass()">🔐 تغيير كلمة المرور</button>
+                    <button class="btn btn-danger" onclick="deleteAccount()">⚠️ حذف الحساب نهائياً</button>
+                    <button onclick="logout()" style="color:gray; background:none; border:none; cursor:pointer; margin-top:10px; display:block; width:100%;">تسجيل خروج 🚪</button>
+                </div>
             </div>
         </div>
 
-        <div id="publicWall" style="display:none; margin-bottom:20px;">
-            <h4 style="color:#ffbe0b; text-align:right;">📌 رسائل معروضة:</h4>
-            <div id="publicContainer"></div>
-        </div>
-
         <div id="myMessagesSection">
-            <h3 style="text-align: right; margin-bottom:15px; border-bottom: 1px solid #333; padding-bottom: 5px;">الوارد 📥</h3>
+            <h3 style="text-align: right; margin-bottom:15px;">الرسائل الواردة 📥</h3>
             <div id="messagesContainer"></div>
         </div>
     </div>
 </div>
 
 <script>
-    // --- المحرك البصري والـ 11 خلفية ---
+    // --- المحرك البصري ---
     const canvas = document.getElementById('effectCanvas');
     const ctx = canvas.getContext('2d');
     let particles = [], bgIndex = 0;
     const weatherNames = ["الغروب", "الأمطار", "القلوب", "البرق", "المحيط", "السديم", "الغابة", "الطاقة", "المجرة", "البركان", "الليل"];
-
     function init() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
     class Particle {
         constructor(type) { this.type = type; this.reset(); }
         reset() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height - canvas.height; this.speed = Math.random() * 5 + 2; }
         draw() {
             ctx.fillStyle = "rgba(255,255,255,0.4)";
-            if(this.type === 'rain') { ctx.fillRect(this.x, this.y, 1, 15); }
+            if(this.type === 'rain') ctx.fillRect(this.x, this.y, 1, 15);
             else if(this.type === 'hearts') { ctx.font='15px Arial'; ctx.fillText('❤️', this.x, this.y); }
-            else if(this.type === 'snow') { ctx.beginPath(); ctx.arc(this.x, this.y, 2, 0, Math.PI*2); ctx.fill(); }
         }
         update() { this.y += this.speed; if(this.y > canvas.height) this.reset(); }
     }
-
     setInterval(() => {
-        bgIndex = (bgIndex + 1) % 11;
-        document.body.className = 'bg-' + bgIndex;
-        document.getElementById('weatherStatus').innerText = "الأجواء: " + weatherNames[bgIndex];
-        particles = [];
-        let type = bgIndex === 1 ? 'rain' : bgIndex === 2 ? 'hearts' : (bgIndex === 5 || bgIndex === 8) ? 'snow' : 'none';
+        bgIndex = (bgIndex + 1) % 11; document.body.className = 'bg-' + bgIndex;
+        document.getElementById('weatherStatus').innerText = "الحالة: " + weatherNames[bgIndex];
+        particles = []; let type = bgIndex === 1 ? 'rain' : bgIndex === 2 ? 'hearts' : 'none';
         if(type !== 'none') for(let i=0; i<40; i++) particles.push(new Particle(type));
     }, 12000);
-
     function animate() {
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        particles.forEach(p => { p.update(); p.draw(); });
-        if(bgIndex === 3 && Math.random() > 0.98) {
-            document.getElementById('lightning').style.opacity = 0.5;
-            setTimeout(() => document.getElementById('lightning').style.opacity = 0, 50);
-        }
+        ctx.clearRect(0,0,canvas.width,canvas.height); particles.forEach(p => { p.update(); p.draw(); });
+        if(bgIndex === 3 && Math.random() > 0.98) { document.getElementById('lightning').style.opacity = 0.5; setTimeout(() => document.getElementById('lightning').style.opacity = 0, 50); }
         requestAnimationFrame(animate);
     }
     init(); animate();
 
-    // --- Firebase Logic ---
+    // --- Firebase ---
     const firebaseConfig = {
         apiKey: "AIzaSyDhz9GpeZE5N78OquK61dQ_pkqTGKbZegc",
         authDomain: "saiko-a6971.firebaseapp.com",
@@ -183,6 +162,29 @@
         } catch (err) { alert(err.message); }
     }
 
+    // --- ميزات الحساب الجديدة ---
+    async function changePass() {
+        const newPass = prompt("أدخل كلمة المرور الجديدة:");
+        if (newPass && newPass.length >= 6) {
+            try {
+                await auth.currentUser.updatePassword(newPass);
+                alert("تم تحديث كلمة المرور بنجاح! ✅");
+            } catch (e) { alert("يجب عليك تسجيل الدخول مرة أخرى لتغيير كلمة المرور."); logout(); }
+        }
+    }
+
+    async function deleteAccount() {
+        if (confirm("⚠️ هل أنت متأكد؟ سيتم حذف حسابك وكل رسائلك نهائياً ولا يمكن استرجاعها!")) {
+            try {
+                const u = localStorage.getItem('saiko_username');
+                await db.collection('users').doc(u).delete();
+                await auth.currentUser.delete();
+                localStorage.clear();
+                location.reload();
+            } catch (e) { alert("يرجى تسجيل الدخول مجدداً لإتمام عملية الحذف."); logout(); }
+        }
+    }
+
     function loadContent(user, isOwner) {
         db.collection('users').doc(user).onSnapshot(doc => {
             if(doc.exists) {
@@ -190,85 +192,42 @@
                 document.getElementById('followsCount').innerText = doc.data().followers || 0;
             }
         });
-
         db.collection('messages').where('to', '==', user).onSnapshot(snap => {
             const myContainer = document.getElementById('messagesContainer');
-            const pubContainer = document.getElementById('publicContainer');
-            if(isOwner) myContainer.innerHTML = '';
-            pubContainer.innerHTML = '';
-            let hasPub = false;
-            
-            snap.forEach(doc => {
-                const d = doc.data();
-                if(isOwner) myContainer.appendChild(createMsgCard(doc.id, d, true));
-                if(d.isPublic) {
-                    hasPub = true;
-                    pubContainer.appendChild(createMsgCard(doc.id, d, false));
-                }
-            });
-            document.getElementById('publicWall').style.display = hasPub ? 'block' : 'none';
+            if(isOwner) {
+                myContainer.innerHTML = '';
+                snap.forEach(doc => {
+                    const div = document.createElement('div');
+                    div.className = 'message-card';
+                    div.innerHTML = `<p>${doc.data().text}</p>
+                    <div class="msg-tools">
+                        <button class="tool-btn" style="background:#ff4d4d" onclick="deleteMsg('${doc.id}')">🗑️ حذف</button>
+                    </div>`;
+                    myContainer.appendChild(div);
+                });
+            }
         });
     }
 
-    function createMsgCard(id, data, isOwner) {
-        const div = document.createElement('div');
-        div.className = 'message-card'; div.id = id;
-        div.innerHTML = `
-            <p>${data.text}</p>
-            <div class="msg-tools">
-                <button class="tool-btn" onclick="saveImg('${id}')">📸 حفظ</button>
-                ${isOwner ? `
-                    <button class="tool-btn btn-show ${data.isPublic ? 'active' : ''}" onclick="toggle('${id}','isPublic')">👁️ عرض</button>
-                    <button class="tool-btn btn-delete" onclick="deleteMsg('${id}')">🗑️ حذف</button>
-                ` : ''}
-            </div>
-        `;
-        return div;
-    }
-
-    async function toggle(id, field) {
-        const s = await db.collection('messages').doc(id).get();
-        await db.collection('messages').doc(id).update({ [field]: !s.data()[field] });
-    }
-
-    async function deleteMsg(id) {
-        if(confirm("مسح الرسالة؟")) await db.collection('messages').doc(id).delete();
-    }
-
-    async function addStat(field) {
-        const to = new URLSearchParams(window.location.search).get('to');
-        if(to) await db.collection('users').doc(to).update({ [field]: firebase.firestore.FieldValue.increment(1) });
-    }
-
+    async function deleteMsg(id) { if(confirm("حذف؟")) await db.collection('messages').doc(id).delete(); }
+    async function addStat(f) { const to = new URLSearchParams(window.location.search).get('to'); await db.collection('users').doc(to).update({ [f]: firebase.firestore.FieldValue.increment(1) }); }
     async function sendMsg() {
         const to = new URLSearchParams(window.location.search).get('to');
         const txt = document.getElementById('msgInput').value;
-        if(!txt || !to) return;
-        await db.collection('messages').add({ to: to, text: txt, isPublic: false, time: Date.now() });
-        alert("تم الإرسال! ✅"); document.getElementById('msgInput').value = '';
+        if(txt) { await db.collection('messages').add({ to: to, text: txt, time: Date.now() }); alert("تم الإرسال!"); document.getElementById('msgInput').value = ''; }
     }
-
-    function saveImg(id) {
-        html2canvas(document.getElementById(id), {backgroundColor:'#111'}).then(c => {
-            const a=document.createElement('a'); a.download='msg.png'; a.href=c.toDataURL(); a.click();
-        });
-    }
-
-    function logout() { auth.signOut(); localStorage.clear(); location.reload(); }
-    
     function copyLink() {
         const u = localStorage.getItem('saiko_username');
         const link = window.location.origin + window.location.pathname + "?to=" + u;
-        navigator.clipboard.writeText(link);
-        alert("تم نسخ الرابط! انشره الآن 🔥");
+        navigator.clipboard.writeText(link); alert("تم نسخ الرابط المباشر!");
     }
+    function logout() { auth.signOut(); localStorage.clear(); location.reload(); }
 
     auth.onAuthStateChanged(user => {
         const to = new URLSearchParams(window.location.search).get('to');
         if (to) {
             document.getElementById('authPage').style.display='none'; document.getElementById('mainPage').style.display='block';
             document.getElementById('visitorActions').style.display='block'; document.getElementById('ownerActions').style.display='none';
-            document.getElementById('myMessagesSection').style.display='none';
             document.getElementById('helloUser').innerText = "إرسال لـ @" + to; loadContent(to, false);
         } else if (user) {
             document.getElementById('authPage').style.display='none'; document.getElementById('mainPage').style.display='block';
